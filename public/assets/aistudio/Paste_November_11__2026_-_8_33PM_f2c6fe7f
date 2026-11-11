@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penjurian Mandiri APDW Sumsel 2026</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f4fe',
+              100: '#dde6fd',
+              500: '#1d4ed8',
+              700: '#1e3a8a',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+            gold: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Songket Pattern Style Accent */
+    .songket-pattern {
+      background-color: #1e3a8a;
+      background-image: radial-gradient(#d97706 0.75px, transparent 0.75px), radial-gradient(#d97706 0.75px, #1e3a8a 0.75px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+      opacity: 0.95;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      body { background: white !important; color: black !important; }
+      .page-break { page-break-before: always; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col selection:bg-gold-500 selection:text-white">
+
+  <!-- TOP HEADER DECORATIVE BAR -->
+  <div class="h-2 songket-pattern border-b border-gold-500"></div>
+
+  <!-- MAIN NAVIGATION / HEADER -->
+  <header class="bg-brand-900 text-white shadow-xl sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-brand-900 shadow-md font-extrabold text-xl flex-shrink-0 border border-gold-400">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="bg-gold-500/20 text-gold-400 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-gold-500/30 uppercase tracking-wider">APDW SUMSEL 2026</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-500/30 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Akses Aktif (30 Hari)
+              </span>
+            </div>
+            <h1 class="text-lg sm:text-xl font-bold font-serif tracking-tight text-white mt-1">
+              Sistem Penjurian Mandiri Lomba Video
+            </h1>
+            <p class="text-xs text-slate-300">Dinas Kebudayaan dan Pariwisata Provinsi Sumatera Selatan</p>
+          </div>
+        </div>
+
+        <!-- Active Judge Status & Controls -->
+        <div id="judgeInfoBar" class="hidden flex items-center justify-between md:justify-end gap-3 bg-brand-800/80 p-2.5 rounded-lg border border-slate-700/60">
+          <div class="text-right">
+            <p class="text-xs text-slate-400">Dewan Juri Terautentikasi:</p>
+            <p id="activeJudgeName" class="text-sm font-bold text-gold-400 truncate max-w-[200px] sm:max-w-[280px]"> Feby Yoland Effendy</p>
+            <p id="activeJudgeInstansi" class="text-[11px] text-slate-300 truncate max-w-[200px] sm:max-w-[280px]">ASITA Sumsel</p>
+          </div>
+          <button onclick="switchJudge()" class="no-print bg-slate-700 hover:bg-slate-600 text-xs text-slate-200 px-3 py-2 rounded-lg border border-slate-600 transition flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-right-from-bracket text-gold-400"></i>
+            <span class="hidden sm:inline">Ganti Juri</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- APP CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- SELECT JUDGE MODAL / VIEW (IF NOT SELECTED) -->
+    <div id="judgeSelectorView" class="max-w-3xl mx-auto py-8">
+      <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+        <div class="songket-pattern p-6 text-white text-center relative">
+          <div class="w-16 h-16 rounded-full bg-gold-500/20 border-2 border-gold-400 flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-user-check text-gold-400 text-2xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold font-serif">Pilih Identitas Dewan Juri</h2>
+          <p class="text-sm text-slate-200 mt-1 max-w-md mx-auto">Silakan pilih nama Anda untuk memulai atau melanjutkan penilaian mandiri. Data penilaian tersimpan secara otomatis di perangkat Anda.</p>
+        </div>
+
+        <div class="p-6 sm:p-8">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Daftar Dewan Juri Resmi (APDW Sumsel 2026):</label>
+          
+          <div id="judgeListCards" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Dynamic judge cards will be inserted here -->
+          </div>
+
+          <div class="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-3 text-xs text-amber-800">
+            <i class="fa-solid fa-shield-halved text-amber-600 text-base mt-0.5"></i>
+            <div>
+              <span class="font-semibold">Keamanan & Kerahasiaan Data:</span>
+              Setiap Anggota Dewan Juri memiliki lembar kerja independen. Nilai dan catatan yang dimasukkan tersimpan secara aman di peramban ini selama periode penjurian (1 Bulan).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN JUDGING WORKSPACE (HIDDEN UNTIL JUDGE IS SELECTED) -->
+    <div id="judgingWorkspaceView" class="hidden space-y-6">
+
+      <!-- TOP BAR CONTROL & STATS OVERVIEW -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 flex flex-col lg:flex-row items-center justify-between gap-4">
+        
+        <!-- Progress Indicator -->
+        <div class="w-full lg:w-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div class="relative flex items-center justify-center">
+              <svg class="w-14 h-14 transform -rotate-90">
+                <circle cx="28" cy="28" r="22" stroke="currentColor" stroke-width="4" class="text-slate-100" fill="transparent" />
+                <circle id="progressCircle" cx="28" cy="28" r="22" stroke="currentColor" stroke-width="4" class="text-gold-500" stroke-dasharray="138" stroke-dashoffset="138" fill="transparent" />
+              </svg>
+              <span id="progressPercent" class="absolute text-xs font-extrabold text-slate-700">0%</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-400 uppercase">Progres Penilaian</div>
+              <div class="text-base font-bold text-slate-800">
+                <span id="completedCount" class="text-brand-700 font-extrabold">0</span> dari 21 Video Selesai
+              </div>
+            </div>
+          </div>
+
+          <div class="hidden sm:block h-8 w-[1px] bg-slate-200"></div>
+
+          <!-- Quick Filters -->
+          <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+            <button onclick="setFilter('all')" id="filterAllBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-700 text-white shadow-sm transition">
+              Semua (21)
+            </button>
+            <button onclick="setFilter('pending')" id="filterPendingBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+              Belum Dinilai (<span id="pendingBadge">21</span>)
+            </button>
+            <button onclick="setFilter('completed')" id="filterCompletedBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+              Selesai (<span id="completedBadge">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Tools & Navigation Buttons -->
+        <div class="flex items-center gap-2 w-full lg:w-auto justify-end no-print">
+          <button onclick="switchTab('scoring')" id="tabScoringBtn" class="flex-1 lg:flex-none px-4 py-2 rounded-lg text-xs font-bold bg-brand-700 text-white flex items-center justify-center gap-1.5 transition shadow-sm">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Lembar Penilaian</span>
+          </button>
+          <button onclick="switchTab('recap')" id="tabRecapBtn" class="flex-1 lg:flex-none px-4 py-2 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Rekap & Pleno</span>
+          </button>
+          <button onclick="openGuideModal()" class="px-3 py-2 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition" title="Petunjuk & Bobot">
+            <i class="fa-solid fa-circle-info"></i>
+            <span class="hidden sm:inline">Petunjuk</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SCORING TAB CONTENT -->
+      <div id="scoringTab" class="space-y-6">
+        
+        <!-- Search & Info Banner -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200">
+          <div class="relative w-full sm:w-80">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Cari desa, kabupaten, atau judul..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-500 focus:bg-white transition">
+          </div>
+          <div class="text-xs text-slate-500 text-right w-full sm:w-auto">
+            <span class="font-semibold text-slate-700">Rentang Nilai:</span> 0 – 100 per aspek. Nilai Akhir dihitung otomatis sesuai bobot.
+          </div>
+        </div>
+
+        <!-- VIDEO SCORING CARDS CONTAINER -->
+        <div id="videoCardsContainer" class="space-y-6">
+          <!-- Video Item Cards rendered via JS -->
+        </div>
+
+      </div>
+
+      <!-- RECAP / SUMMARY TAB CONTENT -->
+      <div id="recapTab" class="hidden space-y-6">
+        
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+            <div>
+              <h3 class="text-xl font-bold font-serif text-slate-900">Rekapitulasi Penilaian Dewan Juri</h3>
+              <p class="text-xs text-slate-500 mt-1">Lomba Video Anugerah Pesona Desa Wisata Sumatera Selatan 2026</p>
+            </div>
+            
+            <!-- Export Buttons -->
+            <div class="flex items-center gap-2 no-print">
+              <button onclick="exportToCSV()" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2 transition shadow-sm">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Ekspor Excel (CSV)</span>
+              </button>
+              <button onclick="window.print()" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-900 text-white flex items-center gap-2 transition shadow-sm">
+                <i class="fa-solid fa-print"></i>
+                <span>Cetak / PDF</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Printed Official Header -->
+          <div class="hidden print-only mb-6 text-center">
+            <h2 class="text-lg font-bold">LEMBAR PENILAIAN & REKAPITULASI DEWAN JURI</h2>
+            <h3 class="text-md font-semibold">LOMBA VIDEO ANUGERAH PESONA DESA WISATA PROVINSI SUMATERA SELATAN TAHUN 2026</h3>
+            <p class="text-xs mt-1">Nama Juri: <span id="printJudgeName" class="font-bold"></span> | Instansi: <span id="printJudgeInstansi"></span></p>
+            <hr class="my-3 border-slate-400">
+          </div>
+
+          <!-- SUMMARY TABLE -->
+          <div class="overflow-x-auto custom-scrollbar mt-4">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider border-b border-slate-300">
+                  <th class="p-3 w-10 text-center">No</th>
+                  <th class="p-3 min-w-[180px]">Desa Wisata / Kab-Kota</th>
+                  <th class="p-3 min-w-[180px]">Judul Video</th>
+                  <th class="p-3 text-center">Cerita (35%)</th>
+                  <th class="p-3 text-center">Budaya (15%)</th>
+                  <th class="p-3 text-center">Potensi (15%)</th>
+                  <th class="p-3 text-center">Visual (15%)</th>
+                  <th class="p-3 text-center">Audio (10%)</th>
+                  <th class="p-3 text-center">Edit (5%)</th>
+                  <th class="p-3 text-center">Promo (5%)</th>
+                  <th class="p-3 text-center bg-gold-100/80 text-brand-900 font-extrabold border-x border-gold-200">TOTAL SKOR</th>
+                  <th class="p-3 text-center min-w-[140px]">Rekomendasi Final</th>
+                </tr>
+              </thead>
+              <tbody id="recapTableBody" class="divide-y divide-slate-200">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- QUALITATIVE FEEDBACK RECAP SECTION FOR PRINT / PLENO -->
+          <div class="mt-8 pt-6 border-t border-slate-200">
+            <h4 class="text-base font-bold text-slate-800 mb-4 font-serif">Catatan & Rekomendasi Kualitatif Juri</h4>
+            <div id="recapNotesContainer" class="space-y-4">
+              <!-- Dynamic qualitative notes -->
+            </div>
+          </div>
+
+          <!-- SIGNATURE BOX FOR PRINTING -->
+          <div class="hidden print-only mt-12 pt-6">
+            <div class="flex justify-end">
+              <div class="text-center w-64">
+                <p class="text-xs">Palembang, ................................ 2026</p>
+                <p class="text-xs font-bold mt-1">DEWAN JURI</p>
+                <div class="h-20"></div>
+                <p id="printSignatureName" class="text-xs font-bold border-b border-slate-800 pb-0.5 inline-block min-w-[180px]"></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- PETUNJUK MODAL -->
+  <div id="guideModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <h3 class="text-lg font-bold font-serif text-brand-900 flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-gold-500"></i>
+          Petunjuk Penilaian & Ketentuan Video
+        </h3>
+        <button onclick="closeGuideModal()" class="text-slate-400 hover:text-slate-600 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs text-slate-600 leading-relaxed">
+        <div class="bg-blue-50 p-3.5 rounded-xl border border-blue-200 text-blue-900">
+          <h4 class="font-bold text-sm mb-1 text-brand-900"><i class="fa-solid fa-bullseye mr-1"></i> Pertanyaan Utama Wajib Dijawab Video:</h4>
+          <p class="font-serif italic text-sm text-brand-800">“Mengapa orang perlu mengenal dan mengunjungi desa wisata ini?”</p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-800 text-sm mb-1">Ketentuan Wajib Video:</h4>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Menampilkan sekurang-kurangnya 3 (tiga) potensi utama desa wisata (Alam, budaya, sejarah, buatan, kuliner, kerajinan, ekowisata, atraksi, homestay, dll).</li>
+            <li>Durasi 3–5 menit, termasuk opening dan closing.</li>
+            <li>Orientasi format Landscape.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-800 text-sm mb-2">Rincian Bobot Penilaian (Total 100%):</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center">
+              <span class="block font-bold text-brand-700 text-sm">35%</span>
+              <span class="text-[11px] text-slate-500">Cerita & Kreativitas</span>
+            </div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center">
+              <span class="block font-bold text-brand-700 text-sm">15%</span>
+              <span class="text-[11px] text-slate-500">Budaya</span>
+            </div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center">
+              <span class="block font-bold text-brand-700 text-sm">15%</span>
+              <span class="text-[11px] text-slate-500">Potensi Desa</span>
+            </div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center">
+              <span class="block font-bold text-brand-700 text-sm">15%</span>
+              <span class="text-[11px] text-slate-500">Visual</span>
+            </div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center">
+              <span class="block font-bold text-brand-700 text-sm">10%</span>
+              <span class="text-[11px] text-slate-500">Audio</span>
+            </div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center">
+              <span class="block font-bold text-brand-700 text-sm">5%</span>
+              <span class="text-[11px] text-slate-500">Editing</span>
+            </div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center">
+              <span class="block font-bold text-brand-700 text-sm">5%</span>
+              <span class="text-[11px] text-slate-500">Promosi</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 text-right">
+        <button onclick="closeGuideModal()" class="px-4 py-2 bg-brand-700 text-white font-bold rounded-lg text-xs hover:bg-brand-800 transition">Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800 no-print">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="font-medium text-slate-300">Sistem Penjurian Mandiri - Anugerah Pesona Desa Wisata (APDW) Sumatera Selatan 2026</p>
+      <p class="mt-1 text-slate-500">Dinas Kebudayaan dan Pariwisata Provinsi Sumatera Selatan &copy; 2026. Hak Cipta Dilindungi.</p>
+    </div>
+  </footer>
+
+  <!-- APPLICATION LOGIC SCRIPT -->
+  <script>
+    // DEWAN JURI DATA
+    const OFFICIAL_JUDGES = [
+      { id: 1, name: "Feby Yoland Effendy, S.IP., M.Si", role: "Ketua DPD ASITA Sumatera Selatan" },
+      { id: 2, name: "Vinita Citra Karini, SE, M.Si", role: "Anggota Bidang Program dan Sumber Daya DEKRANASDA Provinsi Sumsel" },
+      { id: 3, name: "Eko Agus Sugianto", role: "KORMI Provinsi Sumatera Selatan" },
+      { id: 4, name: "Kemas Achmad Renaldo", role: "Sutradara dan Produser" },
+      { id: 5, name: "Novtra Berlandho, Sp", role: "Dinas Kebudayaan dan Pariwisata Provinsi Sumatera Selatan" },
+      { id: 6, name: "Fikri Haikal", role: "Komisioner KPID Sumatera Selatan" }
+    ];
+
+    // VIDEO CONTESTANTS DATA (EXACT 21 ITEMS FROM DOCUMENT)
+    const VIDEO_ENTRIES = [
+      {
+        id: 1,
+        location: "Pesona jumputan dan tenun tuan kentang. Palembang",
+        title: "Merajut Tradisi, Menggerakkan Ekonomi: Pesona Jumputan dan Tenun Tuan Kentang.",
+        link: "https://www.instagram.com/reel/DfgaZF1ALvH/?srtk=MWZxNXl1NjU1NGt4"
+      },
+      {
+        id: 2,
+        location: "Desa Wisata Bangsal, Kabupaten Ogan Komering Ilir",
+        title: "Merawat Secupak Warisan Rawa Bangsal",
+        link: "https://www.instagram.com/reel/DfkOUcrOliR/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 3,
+        location: "Desa serambi, Kabupaten Lahat",
+        title: "Pesona Desa Serambi Lahat",
+        link: "https://www.instagram.com/reel/DfkIM3FJTiL/?utm_source=ig_web_button_share_sheet&dlrf=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 4,
+        location: "Desa Surya Adi Kec.Mesuji Kabupaten.Ogan Komering Ilir",
+        title: "Wisata Nadi Ekonomi Desa Surya Adi",
+        link: "https://www.instagram.com/reel/DfjvFS6SJiH/?utm_source=ig_web_button_share_sheet&cplk=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 5,
+        location: "Desa Sugih Waras, Kecamatan Banding Agung, Kabupaten Ogan Komering Ulu Selatan",
+        title: "Pesona Wisata Danau Ranau",
+        link: "https://www.instagram.com/reel/Dfi0SWvPC0p/?utm_source=ig_web_button_share_sheet&psln=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 6,
+        location: "Bendungan Watervang. Kota Lubuk Linggau",
+        title: "WATERVANG PESONA JUARA",
+        link: "https://www.instagram.com/reel/DfizPE7qIvS/?utm_source=ig_web_button_share_sheet&psln=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 7,
+        location: "Desa Burai. Kabupaten Ogan Ilir",
+        title: "Pesona Alam, Budaya, dan Keramahan Masyarakat",
+        link: "https://www.instagram.com/reel/DfimPwASRfs/?utm_source=ig_web_button_share_sheet&dlrf=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 8,
+        location: "Desa Sukaraja, Kecamatan Kota Agung, Kabupaten Lahat",
+        title: "desaku surgaku",
+        link: "https://www.instagram.com/reel/DfhjW4Hgfix/?utm_source=ig_web_button_share_sheet&exln=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 9,
+        location: "Destinasi rumah limas Raden H Munggah, Masjid Al-Furqon, Dekranasda kabupaten Oki. Kabupaten Ogan Komering Ilir",
+        title: "LESTARIKON BUDAYE JIME TIYOH KAYUAGUNG",
+        link: "https://www.instagram.com/reel/DfhjB3BS9mY/?utm_source=ig_web_button_share_sheet&rpxt=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 10,
+        location: "Desa Burai. Kabupaten Ogan Ilir",
+        title: "Menepi ke Burai : Merawat tenang di Tepian Kelekar",
+        link: "https://www.instagram.com/reel/DfhepwezXzi/?utm_source=ig_web_button_share_sheet&rpxt=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 11,
+        location: "Desa Talang Seleman,Kabupaten Ogan Ilir",
+        title: "Dari sebuah desa sederhana, tumbuh mimpi besar untuk dikenal dunia",
+        link: "https://www.instagram.com/reel/Dfha5SzPHOT/?utm_source=ig_web_button_share_sheet&psln=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 12,
+        location: "Desa Pinang Banjar, Kecamatan Gelumbang, Kabupaten Muara Enim.",
+        title: "NEGERI DONGENG",
+        link: "https://www.instagram.com/reel/DfhdFfQhxYT/?utm_source=ig_web_button_share_sheet&srtk=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 13,
+        location: "Desa Betung Selatan, Kecamatan Abab, Kabupaten Penukal Abab Lematang Ilir.",
+        title: "WISATA PAYE BIRU",
+        link: "https://www.instagram.com/reel/Dfhc3LsR9Bo/?utm_source=ig_web_button_share_sheet&dlrf=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 14,
+        location: "Desa Sumber Asri, Kecamatan Sumber Harta, Kabupaten Musi Rawas",
+        title: "NAWASETA",
+        link: "https://www.instagram.com/reel/DfhWceGxyOA/?utm_source=ig_web_button_share_sheet&obrf=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 15,
+        location: "Candi Bumi Ayu, Kabupaten Penukal Abab Lematang Ilir",
+        title: "WISATA DESA CANDI BUMI AYU",
+        link: "https://www.instagram.com/reel/DfhFhLopioD/?utm_source=ig_web_copy_link&mdxt=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 16,
+        location: "KAMPUNG WISATA ANYAMAN, tepian Sungai Musi di Jalan Faqih Usman Lorong Prajurit Nangyu Rt.04 Rw.02 Kelurahan 3/4ulu Kecamatan Seberang Ulu 1 Palembang.",
+        title: "Dari Daun Nipah Menjadi Karya Indah | Mengenal pesona desa wisata anyaman , Palembang",
+        link: "https://www.instagram.com/reel/DfhAqSrR5h4/?utm_source=ig_web_button_share_sheet&cplk=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 17,
+        location: "Desa janang, kelurahan gunung Dempo, Kecamatan Pagar Alam Selatan, Kota Pagar Alam.",
+        title: "ketika keterbatasan menjadi kekuatan",
+        link: "https://www.instagram.com/reel/DfgkijrCv3R/?utm_source=ig_web_button_share_sheet&xtok=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 18,
+        location: "Kampung Gerabah Maju Bersama, kecamatan Sei Selincah, Kalidoni, kota Palembang, Sumatera Selatan.",
+        title: "Jejak Tanah Liat di Bumi Sriwijaya, Pesona Kampung Gerabah Maju Bersama",
+        link: "https://www.instagram.com/reel/DfgGwbHy150/?utm_source=ig_web_button_share_sheet&exln=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 19,
+        location: "Desa Pinang Banjar, Kecamatan Gelumbang, Kabupaten Muara Enim",
+        title: "DIBALIK INDAHNYA PINANG BANJAR",
+        link: "https://www.instagram.com/reel/Dfef4sthQ4S/?utm_source=ig_web_button_share_sheet&mdxt=MzRlODBiNWFlZA="
+      },
+      {
+        id: 20,
+        location: "Desa Ulu Danau, Kecamatan Sindang Danau, Kabupaten Ogan Komering Ulu Selatan",
+        title: "SURGA ALAM TERSEMBUNYI DI PELOSOK NEGERI",
+        link: "https://www.instagram.com/reel/DfXVN5oSTdz/?utm_source=ig_web_button_share_sheet&obrf=MzRlODBiNWFlZA=="
+      },
+      {
+        id: 21,
+        location: "Kampung Kapitan, Palembang",
+        title: "wisata langsung aja ke Kampung Kapitan",
+        link: "https://www.instagram.com/reel/DfUo9O5BzeQ/?utm_source=ig_web_button_share_sheet&exln=MzRlODBiNWFlZA=="
+      }
+    ];
+
+    // WEIGHT DEFINITIONS
+    const WEIGHTS = {
+      cerita: 0.35,
+      budaya: 0.15,
+      potensi: 0.15,
+      visual: 0.15,
+      audio: 0.10,
+      editing: 0.05,
+      promosi: 0.05
+    };
+
+    // STATE MANAGEMENT
+    let currentJudgeId = null;
+    let judgeScores = {}; // Keyed by video ID
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    // INITIALIZATION
+    window.onload = function() {
+      renderJudgeSelectorCards();
+      checkSavedSession();
+    };
+
+    function checkSavedSession() {
+      const savedJudgeId = localStorage.getItem('APDW_2026_ACTIVE_JUDGE');
+      if (savedJudgeId) {
+        selectJudge(parseInt(savedJudgeId));
+      } else {
+        document.getElementById('judgeSelectorView').classList.remove('hidden');
+        document.getElementById('judgingWorkspaceView').classList.add('hidden');
+        document.getElementById('judgeInfoBar').classList.add('hidden');
+      }
+    }
+
+    function renderJudgeSelectorCards() {
+      const container = document.getElementById('judgeListCards');
+      container.innerHTML = OFFICIAL_JUDGES.map(j => `
+        <div onclick="selectJudge(${j.id})" class="p-4 rounded-xl border border-slate-200 hover:border-gold-500 bg-white hover:bg-gold-50/30 transition cursor-pointer flex items-start gap-3.5 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-brand-50 group-hover:bg-gold-500 text-brand-700 group-hover:text-white flex items-center justify-center font-bold text-sm transition">
+            J${j.id}
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-slate-800 group-hover:text-brand-900 text-sm truncate">${j.name}</h4>
+            <p class="text-xs text-slate-500 mt-0.5">${j.role}</p>
+          </div>
+          <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-gold-500 transition mt-2"></i>
+        </div>
+      `).join('');
+    }
+
+    function selectJudge(judgeId) {
+      currentJudgeId = judgeId;
+      const judge = OFFICIAL_JUDGES.find(j => j.id === judgeId);
+      
+      // Update LocalStorage active judge
+      localStorage.setItem('APDW_2026_ACTIVE_JUDGE', judgeId);
+
+      // Load judge specific data
+      loadJudgeData(judgeId);
+
+      // UI Update
+      document.getElementById('activeJudgeName').innerText = judge.name;
+      document.getElementById('activeJudgeInstansi').innerText = judge.role;
+      document.getElementById('printJudgeName').innerText = judge.name;
+      document.getElementById('printJudgeInstansi').innerText = judge.role;
+      document.getElementById('printSignatureName').innerText = judge.name;
+
+      document.getElementById('judgeSelectorView').classList.add('hidden');
+      document.getElementById('judgingWorkspaceView').classList.remove('hidden');
+      document.getElementById('judgeInfoBar').classList.remove('hidden');
+      document.getElementById('judgeInfoBar').classList.add('flex');
+
+      renderScoringCards();
+      updateProgressAndRecap();
+    }
+
+    function switchJudge() {
+      if(confirm('Apakah Anda ingin berganti dewan juri? Data Anda tersimpan secara otomatis.')) {
+        localStorage.removeItem('APDW_2026_ACTIVE_JUDGE');
+        currentJudgeId = null;
+        document.getElementById('judgeSelectorView').classList.remove('hidden');
+        document.getElementById('judgingWorkspaceView').classList.add('hidden');
+        document.getElementById('judgeInfoBar').classList.add('hidden');
+      }
+    }
+
+    function getStorageKey(judgeId) {
+      return `APDW_2026_SCORES_JUDGE_${judgeId}`;
+    }
+
+    function loadJudgeData(judgeId) {
+      const raw = localStorage.getItem(getStorageKey(judgeId));
+      if (raw) {
+        try {
+          judgeScores = JSON.parse(raw);
+        } catch(e) {
+          judgeScores = {};
+        }
+      } else {
+        judgeScores = {};
+      }
+    }
+
+    function saveJudgeData() {
+      if (currentJudgeId) {
+        localStorage.setItem(getStorageKey(currentJudgeId), JSON.stringify(judgeScores));
+        updateProgressAndRecap();
+      }
+    }
+
+    function calculateTotalScore(scores) {
+      if (!scores) return 0;
+      const c = (parseFloat(scores.cerita) || 0) * WEIGHTS.cerita;
+      const b = (parseFloat(scores.budaya) || 0) * WEIGHTS.budaya;
+      const p = (parseFloat(scores.potensi) || 0) * WEIGHTS.potensi;
+      const v = (parseFloat(scores.visual) || 0) * WEIGHTS.visual;
+      const a = (parseFloat(scores.audio) || 0) * WEIGHTS.audio;
+      const e = (parseFloat(scores.editing) || 0) * WEIGHTS.editing;
+      const pr = (parseFloat(scores.promosi) || 0) * WEIGHTS.promosi;
+      return (c + b + p + v + a + e + pr).toFixed(2);
+    }
+
+    function isVideoCompleted(vId) {
+      const s = judgeScores[vId];
+      if (!s) return false;
+      return (
+        s.cerita !== undefined && s.cerita !== '' &&
+        s.budaya !== undefined && s.budaya !== '' &&
+        s.potensi !== undefined && s.potensi !== '' &&
+        s.visual !== undefined && s.visual !== '' &&
+        s.audio !== undefined && s.audio !== '' &&
+        s.editing !== undefined && s.editing !== '' &&
+        s.promosi !== undefined && s.promosi !== ''
+      );
+    }
+
+    function renderScoringCards() {
+      const container = document.getElementById('videoCardsContainer');
+      
+      const filtered = VIDEO_ENTRIES.filter(v => {
+        // Filter by Search Query
+        const matchSearch = v.location.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            v.title.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        // Filter by Status Tab
+        const completed = isVideoCompleted(v.id);
+        if (currentFilter === 'pending' && completed) return false;
+        if (currentFilter === 'completed' && !completed) return false;
+
+        return matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-xl p-12 text-center border border-slate-200">
+            <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3"></i>
+            <h4 class="text-slate-600 font-bold">Tidak ada video yang ditemukan</h4>
+            <p class="text-xs text-slate-400 mt-1">Coba sesuaikan kata kunci pencarian atau filter status Anda.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(v => {
+        const scores = judgeScores[v.id] || {};
+        const total = calculateTotalScore(scores);
+        const completed = isVideoCompleted(v.id);
+
+        return `
+          <div class="bg-white rounded-2xl border ${completed ? 'border-emerald-200 shadow-sm' : 'border-slate-200 shadow-sm'} overflow-hidden transition hover:shadow-md">
+            
+            <!-- CARD HEADER -->
+            <div class="bg-slate-50 p-4 sm:p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div class="flex items-start gap-3">
+                <span class="w-8 h-8 rounded-lg ${completed ? 'bg-emerald-500 text-white' : 'bg-brand-900 text-gold-400'} flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
+                  #${v.id}
+                </span>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm sm:text-base leading-snug">${v.title}</h3>
+                  <p class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                    <i class="fa-solid fa-location-dot text-rose-500"></i>
+                    ${v.location}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Media Link & Score Badge -->
+              <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-slate-200">
+                <a href="${v.link}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-1.5 transition">
+                  <i class="fa-brands fa-instagram text-sm"></i>
+                  <span>Buka Video Instagram</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-0.5"></i>
+                </a>
+
+                <div class="bg-gradient-to-r from-brand-900 to-brand-800 text-white px-3.5 py-1.5 rounded-xl text-center border border-brand-700 min-w-[90px]">
+                  <span class="block text-[9px] uppercase tracking-wider text-gold-400 font-semibold">Skor Total</span>
+                  <span id="score-total-${v.id}" class="text-lg font-extrabold text-gold-400 font-mono">${total}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD BODY: SCORING INPUTS -->
+            <div class="p-4 sm:p-6 space-y-6">
+              
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Input Nilai Per Aspek (Rentang 0 - 100):</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                  
+                  <!-- Cerita (35%) -->
+                  <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 focus-within:border-brand-500 transition">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="text-[11px] font-bold text-slate-700">Cerita</span>
+                      <span class="text-[10px] bg-brand-100 text-brand-800 px-1.5 py-0.2 rounded font-semibold">35%</span>
+                    </div>
+                    <input type="number" min="0" max="100" placeholder="0-100" value="${scores.cerita !== undefined ? scores.cerita : ''}"
+                      oninput="updateAspectScore(${v.id}, 'cerita', this.value)"
+                      class="w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-lg py-1 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+
+                  <!-- Budaya (15%) -->
+                  <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 focus-within:border-brand-500 transition">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="text-[11px] font-bold text-slate-700">Budaya</span>
+                      <span class="text-[10px] bg-brand-100 text-brand-800 px-1.5 py-0.2 rounded font-semibold">15%</span>
+                    </div>
+                    <input type="number" min="0" max="100" placeholder="0-100" value="${scores.budaya !== undefined ? scores.budaya : ''}"
+                      oninput="updateAspectScore(${v.id}, 'budaya', this.value)"
+                      class="w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-lg py-1 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+
+                  <!-- Potensi (15%) -->
+                  <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 focus-within:border-brand-500 transition">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="text-[11px] font-bold text-slate-700">Potensi</span>
+                      <span class="text-[10px] bg-brand-100 text-brand-800 px-1.5 py-0.2 rounded font-semibold">15%</span>
+                    </div>
+                    <input type="number" min="0" max="100" placeholder="0-100" value="${scores.potensi !== undefined ? scores.potensi : ''}"
+                      oninput="updateAspectScore(${v.id}, 'potensi', this.value)"
+                      class="w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-lg py-1 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+
+                  <!-- Visual (15%) -->
+                  <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 focus-within:border-brand-500 transition">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="text-[11px] font-bold text-slate-700">Visual</span>
+                      <span class="text-[10px] bg-brand-100 text-brand-800 px-1.5 py-0.2 rounded font-semibold">15%</span>
+                    </div>
+                    <input type="number" min="0" max="100" placeholder="0-100" value="${scores.visual !== undefined ? scores.visual : ''}"
+                      oninput="updateAspectScore(${v.id}, 'visual', this.value)"
+                      class="w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-lg py-1 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+
+                  <!-- Audio (10%) -->
+                  <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 focus-within:border-brand-500 transition">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="text-[11px] font-bold text-slate-700">Audio</span>
+                      <span class="text-[10px] bg-brand-100 text-brand-800 px-1.5 py-0.2 rounded font-semibold">10%</span>
+                    </div>
+                    <input type="number" min="0" max="100" placeholder="0-100" value="${scores.audio !== undefined ? scores.audio : ''}"
+                      oninput="updateAspectScore(${v.id}, 'audio', this.value)"
+                      class="w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-lg py-1 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+
+                  <!-- Editing (5%) -->
+                  <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 focus-within:border-brand-500 transition">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="text-[11px] font-bold text-slate-700">Editing</span>
+                      <span class="text-[10px] bg-brand-100 text-brand-800 px-1.5 py-0.2 rounded font-semibold">5%</span>
+                    </div>
+                    <input type="number" min="0" max="100" placeholder="0-1

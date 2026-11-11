@@ -1,0 +1,8 @@
+{
+  "name": "Sistem Penjurian Video APDW Sumsel 2026",
+  "description": "Sistem Penjurian Mandiri Lomba Video Anugerah Pesona Desa Wisata (APDW) Sumatera Selatan 2026 - Dinas Kebudayaan dan Pariwisata Provinsi Sumatera Selatan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
